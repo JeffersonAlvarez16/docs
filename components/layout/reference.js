@@ -30,9 +30,19 @@ const NonAmpOnly = ({ children }) => (useAmp() ? null : children)
 
 const debouncedChangeHash = debounce(changeHash, 200)
 
-function ReferencePage({ router, Data, versioned }) {
-  const [activeCategory, setActiveCategory] = useState('getting-started')
-  const [activeSection, setActiveSection] = useState('introduction')
+function ReferencePage({
+  router,
+  Data,
+  versioned,
+  title,
+  description,
+  defaultActiveCategory,
+  defaultActiveSection
+}) {
+  const [activeCategory, setActiveCategory] = useState(
+    defaultActiveCategory || 'getting-started'
+  )
+  const [activeSection, setActiveSection] = useState(defaultActiveSection || '')
   const [activeEntry, setActiveEntry] = useState(null)
   const [activeSubEntry, setActiveSubEntry] = useState(null)
   const [navigationActive, setNavigationActive] = useState(false)
@@ -120,11 +130,15 @@ function ReferencePage({ router, Data, versioned }) {
     >
       <Layout>
         <Head
-          description="A comprehensive guide to using ZEIT Now and gaining control over the ZEIT Now platform"
-          title={`ZEIT Now API Documentation`}
+          description={description || ''}
+          title={title || 'ZEIT Now Reference'}
           titlePrefix=""
           titleSuffix=" - ZEIT"
-        />
+        >
+          {versioned && version === 'v1' && (
+            <meta name="robots" content="noindex" />
+          )}
+        </Head>
 
         <DocsRuntime docs={Data}>
           {({ structure }) => (
