@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import authenticate from '~/lib/authenticate'
 import { UserContext } from '~/lib/user-context'
+import { useRouter } from 'next/router'
 import DataContext from '~/lib/data-context'
 import Head from 'next/head'
 import { fullStoryScript } from '~/lib/scripts'
@@ -14,6 +15,8 @@ function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({})
   const [userLoaded, setUserLoaded] = useState(false)
   const [data, setData] = useState(null)
+  const [toggledSidebarItem, setToggledSidebarItem] = useState(null)
+  const router = useRouter()
 
   useEffect(() => {
     async function authUser() {
@@ -26,8 +29,19 @@ function MyApp({ Component, pageProps }) {
     authUser()
   }, [])
 
+  useEffect(() => {
+    if (
+      router.pathname.includes('/guides') ||
+      router.pathname.includes('/docs/error')
+    ) {
+      setData(null)
+    }
+  })
+
   return (
-    <DataContext.Provider value={{ setData }}>
+    <DataContext.Provider
+      value={{ setData, setToggledSidebarItem, toggledSidebarItem }}
+    >
       <UserContext.Provider value={{ user, userLoaded }}>
         <Head>
           {typeof document !== 'undefined' &&
@@ -43,7 +57,6 @@ function MyApp({ Component, pageProps }) {
         </Head>
         <Layout data={data}>
           <Component {...pageProps} />
-
           <style jsx global>
             {baseTheme}
           </style>

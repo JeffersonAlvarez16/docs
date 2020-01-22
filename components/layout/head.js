@@ -71,7 +71,7 @@ class Head extends React.PureComponent {
       null != this.props.titleSuffix ? this.props.titleSuffix : ''
     const ogDescription = this.props.ogDescription || this.props.description
     return (
-      <div>
+      <>
         <NextHead>
           <title>{titlePrefix + this.props.title + titleSuffix}</title>
           <meta name="twitter:card" content="summary_large_image" />
@@ -255,7 +255,7 @@ class Head extends React.PureComponent {
 
           {this.props.children}
         </NextHead>
-      </div>
+      </>
     )
   }
 }

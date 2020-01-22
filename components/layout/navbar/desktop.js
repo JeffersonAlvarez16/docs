@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import NextLink from 'next/link'
 import cn from 'classnames'
 import qs from 'querystring'
 import { parse } from 'url'
+import DataContext from '~/lib/data-context'
 import _scrollIntoViewIfNeeded from 'scroll-into-view-if-needed'
 import ArrowRight from '~/components/icons/arrow-right'
 import * as metrics from '~/lib/metrics'
@@ -34,7 +35,6 @@ function findClosestScrollableElement(_elem) {
 
 function Category({ info, level = 1, onClick, ...props }) {
   const levelClass = `level-${level}`
-  const [toggle, setToggle] = useState(false)
 
   const categorySelected =
     props.url.pathname === '/docs' || props.url.pathname === '/docs/v2'
@@ -43,13 +43,7 @@ function Category({ info, level = 1, onClick, ...props }) {
         : false
       : JSON.stringify(info.posts).includes(
           props.url.pathname.replace(/\/$/, '')
-        )
-
-  useEffect(() => {
-    if (categorySelected) {
-      setToggle(true)
-    }
-  }, [categorySelected])
+        ) || info.href === props.url.pathname.replace(/\/$/, '')
 
   const onToggleCategory = () => {
     metrics.event({
@@ -57,13 +51,12 @@ function Category({ info, level = 1, onClick, ...props }) {
       category: 'engagement',
       label: info.name
     })
-    setToggle(!toggle)
   }
 
   return (
     <div
       className={cn('category', levelClass, {
-        open: toggle,
+        open: categorySelected,
         selected: categorySelected,
         separated: info.sidebarSeparator
       })}
@@ -71,22 +64,32 @@ function Category({ info, level = 1, onClick, ...props }) {
     >
       <a className="label" onClick={onToggleCategory}>
         <ArrowRight fill="#999" />
-        {info.name}
+        {info.href ? (
+          <NavLink
+            info={info}
+            url={props.url}
+            hash={props.hash}
+            scrollSelectedIntoView={props.scrollSelectedIntoView}
+            categorySelected={props.categorySelected}
+            level={level}
+            onClick={onClick}
+          />
+        ) : (
+          info.name
+        )}
       </a>
-      {!info.href ? (
-        <div className="posts">
-          {info.posts.map(postInfo => (
-            <Post
-              info={postInfo}
-              level={level + 1}
-              categorySelected={categorySelected}
-              key={postInfo.name}
-              onClick={onClick}
-              {...props}
-            />
-          ))}
-        </div>
-      ) : null}
+      <div className="posts">
+        {info.posts.map(postInfo => (
+          <Post
+            info={postInfo}
+            level={level + 1}
+            categorySelected={categorySelected}
+            key={postInfo.name}
+            onClick={onClick}
+            {...props}
+          />
+        ))}
+      </div>
       <style jsx>{`
         .label {
           font-size: var(--font-size-primary);

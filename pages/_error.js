@@ -1,7 +1,6 @@
 import React from 'react'
 import Error from 'next/error'
 import Head from '~/components/layout/head'
-import Layout from '~/components/layout/layout'
 import Content from '~/components/layout/content'
 import Text, { H1, H4 } from '~/components/text'
 import { LinkList } from '~/components/list'
@@ -13,7 +12,7 @@ function ErrorPage({ statusCode }) {
   }
 
   return (
-    <Layout>
+    <>
       <Head
         titlePrefix=""
         titleSuffix=" - ZEIT Documentation"
@@ -149,7 +148,7 @@ function ErrorPage({ statusCode }) {
           margin-bottom: 32px;
         }
       `}</style>
-    </Layout>
+    </>
   )
 }
 

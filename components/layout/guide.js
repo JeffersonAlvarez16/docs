@@ -4,7 +4,6 @@ import formatDate from 'date-fns/format'
 import { useAmp } from 'next/amp'
 
 import Head from '~/components/layout/head'
-import Layout from '~/components/layout/layout'
 import Wrapper from '~/components/layout/wrapper'
 import ContentFooter from '~/components/layout/content-footer'
 import Heading from '~/components/text/linked-heading'
@@ -75,152 +74,150 @@ class Guide extends React.PureComponent {
           h4: DocH4
         }}
       >
-        <Layout>
-          <Head
-            titlePrefix=""
-            titleSuffix=" - ZEIT Now Guides"
-            title={`${meta.title}`}
-            description={meta.description}
-            image={meta.image}
-          />
+        <Head
+          titlePrefix=""
+          titleSuffix=" - ZEIT Now Guides"
+          title={`${meta.title}`}
+          description={meta.description}
+          image={meta.image}
+        />
 
-          <article>
-            <header className="guide-heading content-heading">
-              <Wrapper width="900">
-                <H1>{meta.title}</H1>
-                <P>{meta.description}</P>
-              </Wrapper>
-            </header>
-
-            <Wrapper width="768">
-              <section className="guide content">
-                {meta.example && meta.demo && (
-                  <DeployBanner example={meta.example} demo={meta.demo} />
-                )}
-                {this.props.children}
-                <NonAmpOnly>
-                  <>
-                    <HR />
-                    <FooterFeedback />
-                  </>
-                </NonAmpOnly>
-                <HR />
-                <div className="guide-author" id="authors">
-                  <H5>Written By</H5>
-                  <div className="authors-list">
-                    {meta.authors.map(author => (
-                      <div className="author-info" key={author}>
-                        <Avatar
-                          size={32}
-                          username={author}
-                          title={`Written by ${author}`}
-                        />
-                        <span className="username">{author}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <span className="published">
-                    on {formatDate(meta.published, 'MMMM Do YYYY')}
-                  </span>
-                </div>
-                <ContentFooter
-                  lastEdited={meta.lastEdited}
-                  editUrl={meta.editUrl}
-                />
-              </section>
+        <article>
+          <header className="guide-heading content-heading">
+            <Wrapper width="900">
+              <H1>{meta.title}</H1>
+              <P>{meta.description}</P>
             </Wrapper>
-          </article>
+          </header>
 
-          <style jsx>{`
-            .guide {
-              width: 100%;
-              padding-bottom: 96px;
-              padding-top: 32px;
-              display: flex;
-              flex-direction: column;
-            }
+          <Wrapper width="768">
+            <section className="guide content">
+              {meta.example && meta.demo && (
+                <DeployBanner example={meta.example} demo={meta.demo} />
+              )}
+              {this.props.children}
+              <NonAmpOnly>
+                <>
+                  <HR />
+                  <FooterFeedback />
+                </>
+              </NonAmpOnly>
+              <HR />
+              <div className="guide-author" id="authors">
+                <H5>Written By</H5>
+                <div className="authors-list">
+                  {meta.authors.map(author => (
+                    <div className="author-info" key={author}>
+                      <Avatar
+                        size={32}
+                        username={author}
+                        title={`Written by ${author}`}
+                      />
+                      <span className="username">{author}</span>
+                    </div>
+                  ))}
+                </div>
+                <span className="published">
+                  on {formatDate(meta.published, 'MMMM Do YYYY')}
+                </span>
+              </div>
+              <ContentFooter
+                lastEdited={meta.lastEdited}
+                editUrl={meta.editUrl}
+              />
+            </section>
+          </Wrapper>
+        </article>
 
-            .guide-heading {
-              border-bottom: 1px solid #eaeaea;
-              padding-top: 24px;
-              padding-bottom: 44px;
-              text-align: center;
-            }
+        <style jsx>{`
+          .guide {
+            width: 100%;
+            padding-bottom: 96px;
+            padding-top: 32px;
+            display: flex;
+            flex-direction: column;
+          }
 
-            .guide-meta {
-              margin-top: 40px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
+          .guide-heading {
+            border-bottom: 1px solid #eaeaea;
+            padding-top: 24px;
+            padding-bottom: 44px;
+            text-align: center;
+          }
 
-            .guide-meta :global(.avatar-group) {
-              width: auto;
-              margin-right: 16px;
-            }
+          .guide-meta {
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
 
-            .guide-author :global(h5) {
-              margin-top: 0;
-            }
+          .guide-meta :global(.avatar-group) {
+            width: auto;
+            margin-right: 16px;
+          }
 
-            .authors-list {
-              display: flex;
-              flex-flow: row wrap;
-            }
+          .guide-author :global(h5) {
+            margin-top: 0;
+          }
 
-            .author-info {
-              display: flex;
-              align-items: center;
-              margin-right: 24px;
-              font-size: var(--font-size-primary);
-              line-height: var(--line-height-primary);
-              margin-bottom: 8px;
-            }
+          .authors-list {
+            display: flex;
+            flex-flow: row wrap;
+          }
 
-            .author-info :global(.avatar) {
-              margin-right: 8px;
-            }
+          .author-info {
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+            font-size: var(--font-size-primary);
+            line-height: var(--line-height-primary);
+            margin-bottom: 8px;
+          }
 
-            .published {
-              color: #666;
-              font-size: var(--font-size-primary);
-              line-height: var(--line-height-primary);
-              margin-top: 24px;
-              display: block;
-            }
+          .author-info :global(.avatar) {
+            margin-right: 8px;
+          }
 
-            .guide-heading :global(h1) {
-              margin-bottom: 8px;
-            }
+          .published {
+            color: #666;
+            font-size: var(--font-size-primary);
+            line-height: var(--line-height-primary);
+            margin-top: 24px;
+            display: block;
+          }
 
-            .guide-heading :global(p) {
-              font-size: 16px;
-              margin-top: 8px;
-              color: #444444;
-            }
+          .guide-heading :global(h1) {
+            margin-bottom: 8px;
+          }
 
+          .guide-heading :global(p) {
+            font-size: 16px;
+            margin-top: 8px;
+            color: #444444;
+          }
+
+          .rate-guide :global(h5) {
+            margin: 0;
+            display: inline-block;
+          }
+
+          .rate-guide :global(.feedback) {
+            display: inline-flex;
+            margin-left: 24px;
+          }
+
+          @media (max-width: 552px) {
             .rate-guide :global(h5) {
-              margin: 0;
-              display: inline-block;
+              display: block;
+              margin-bottom: 32px;
             }
 
             .rate-guide :global(.feedback) {
-              display: inline-flex;
-              margin-left: 24px;
+              margin-left: 0;
             }
-
-            @media (max-width: 552px) {
-              .rate-guide :global(h5) {
-                display: block;
-                margin-bottom: 32px;
-              }
-
-              .rate-guide :global(.feedback) {
-                margin-left: 0;
-              }
-            }
-          `}</style>
-        </Layout>
+          }
+        `}</style>
       </MDXProvider>
     )
   }

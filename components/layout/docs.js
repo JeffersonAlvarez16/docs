@@ -5,15 +5,10 @@ import { MDXProvider } from '@mdx-js/tag'
 
 import * as bodyLocker from '~/lib/utils/body-locker'
 import Head from '~/components/layout/head'
-import Layout from '~/components/layout/layout'
-import Main from '~/components/layout/main'
 import Heading from '~/components/text/linked-heading'
-import Sidebar from '~/components/layout/sidebar'
-import VersionSwitcher from '~/components/layout/version-switcher'
 import DataContext from '~/lib/data-context'
 import Content from '~/components/layout/content'
 import ContentFooter from '~/components/layout/content-footer'
-import DocsNavbarDesktop from '~/components/layout/navbar/desktop'
 import Link from '~/components/text/link'
 import components from '~/lib/mdx-components'
 import { H1, H2, H3, H4 } from '~/components/text'
@@ -76,6 +71,7 @@ const DocH4 = ({ children }) => (
 )
 
 const NonAmpOnly = ({ children }) => (useAmp() ? null : children)
+
 const defaultDescription =
   'The knowledge base and documentation for how to use ZEIT Now and how it works.'
 
@@ -115,7 +111,7 @@ function Doc({
         h4: DocH4
       }}
     >
-      <Layout>
+      <>
         <Head
           titlePrefix=""
           titleSuffix=" - ZEIT Documentation"
@@ -127,48 +123,31 @@ function Doc({
           {version !== 'v2' && <meta name="robots" content="noindex" />}
         </Head>
 
-        <Main>
+        <Content>
+          <div className="heading content-heading">
+            {version === 'v1' && (
+              <Note>
+                This documentation is for <b>version 1</b> of the ZEIT Now
+                platform. For the latest features, please see{' '}
+                <Link href="/docs/v2">the version 2 documentation</Link>. If you
+                have yet to upgrade, see the{' '}
+                <Link href="/guides/migrate-to-zeit-now/">upgrade guide</Link>.
+              </Note>
+            )}
+            <DocH1>{meta.title}</DocH1>
+          </div>
+
+          <div className="content">{children}</div>
+
           <NonAmpOnly>
-            <Sidebar active={navigationActive}>
-              <DocsNavbarDesktop data={versionData} url={router} />
-              <div className="select-wrapper">
-                <VersionSwitcher
-                  version={version}
-                  onChange={handleVersionChange}
-                />
-              </div>
-            </Sidebar>
+            <>
+              <HR />
+              <FooterFeedback />
+            </>
           </NonAmpOnly>
-          <Content>
-            <div className="heading content-heading">
-              {version === 'v1' && (
-                <Note>
-                  This documentation is for <b>version 1</b> of the ZEIT Now
-                  platform. For the latest features, please see{' '}
-                  <Link href="/docs/v2">the version 2 documentation</Link>. If
-                  you have yet to upgrade, see the{' '}
-                  <Link href="/guides/migrate-to-zeit-now/">upgrade guide</Link>
-                  .
-                </Note>
-              )}
-              <DocH1>{meta.title}</DocH1>
-            </div>
 
-            <div className="content">{children}</div>
-
-            <NonAmpOnly>
-              <>
-                <HR />
-                <FooterFeedback />
-              </>
-            </NonAmpOnly>
-
-            <ContentFooter
-              lastEdited={meta.lastEdited}
-              editUrl={meta.editUrl}
-            />
-          </Content>
-        </Main>
+          <ContentFooter lastEdited={meta.lastEdited} editUrl={meta.editUrl} />
+        </Content>
 
         <style jsx>{`
           ul {
@@ -197,9 +176,21 @@ function Doc({
             margin-top: 32px;
           }
         `}</style>
-      </Layout>
+      </>
     </MDXProvider>
   )
 }
 
 export default withRouter(Doc)
+
+// <NonAmpOnly>
+//   <Sidebar active={navigationActive}>
+//     <DocsNavbarDesktop data={versionData} url={router} />
+//     <div className="select-wrapper">
+//       <VersionSwitcher
+//         version={version}
+//         onChange={handleVersionChange}
+//       />
+//     </div>
+//   </Sidebar>
+// </NonAmpOnly>

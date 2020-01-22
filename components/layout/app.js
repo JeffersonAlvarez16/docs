@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAmp } from 'next/amp'
+import { useRouter } from 'next/router'
 import Page from '~/components/layout/page'
 import Header from '~/components/layout/header'
 import { UserContext } from '~/lib/user-context'
@@ -7,6 +8,10 @@ import { ZenContext } from '~/lib/zen-context'
 import UseTeamInfo from '~/lib/use-team-info'
 import { withToasts } from '~/components/toasts'
 import * as bodyLocker from '~/lib/utils/body-locker'
+import Main from '~/components/layout/main'
+import Sidebar from '~/components/layout/sidebar'
+import DocsNavbarDesktop from '~/components/layout/navbar/desktop'
+import VersionSwitcher from '~/components/layout/version-switcher'
 
 const LayoutHeader = React.memo(props => {
   const isAmp = useAmp()
@@ -14,12 +19,15 @@ const LayoutHeader = React.memo(props => {
 })
 
 function Layout({ data, children }) {
+  const router = useRouter()
   const [navigationActive, setNavigationActive] = useState(false)
   const [zenModeActive, setZenModeActive] = useState(false)
   const [scrollPosition, setScrollPosition] = useState(
     (typeof window !== 'undefined' && window.pageYOffset) || 0
   )
   let altKeyDown = false
+
+  const NonAmpOnly = ({ children }) => (useAmp() ? null : children)
 
   useEffect(() => {
     document.addEventListener('keydown', onKeyDown.bind(this), false)
@@ -116,9 +124,16 @@ function Layout({ data, children }) {
           </>
         )}
       </UserContext.Consumer>
-      <ZenContext.Provider value={zenModeActive}>
+      <Main>
+        {data && (
+          <NonAmpOnly>
+            <Sidebar active={navigationActive}>
+              <DocsNavbarDesktop data={data} url={router} />
+            </Sidebar>
+          </NonAmpOnly>
+        )}
         {children}
-      </ZenContext.Provider>
+      </Main>
     </Page>
   )
 }

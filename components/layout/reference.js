@@ -7,7 +7,6 @@ import { HEADER_HEIGHT } from '~/lib/constants'
 import NextLink from 'next/link'
 
 import * as bodyLocker from '~/lib/utils/body-locker'
-import Layout from '~/components/layout/layout'
 import Main from '~/components/layout/main'
 import changeHash from '~/lib/utils/change-hash'
 import components from '~/lib/mdx-components'
@@ -128,257 +127,249 @@ function ReferencePage({
         h4: withPermalink(components.h4)
       }}
     >
-      <Layout>
-        <Head
-          description={description || ''}
-          title={title || 'ZEIT Now Reference'}
-          titlePrefix=""
-          titleSuffix=" - ZEIT"
-        >
-          {versioned && version === 'v1' && (
-            <meta name="robots" content="noindex" />
-          )}
-        </Head>
+      <Head
+        description={description || ''}
+        title={title || 'ZEIT Now Reference'}
+        titlePrefix=""
+        titleSuffix=" - ZEIT"
+      >
+        {versioned && version === 'v1' && (
+          <meta name="robots" content="noindex" />
+        )}
+      </Head>
 
-        <DocsRuntime docs={Data}>
-          {({ structure }) => (
-            <Main>
-              <Sidebar
-                active={navigationActive}
-                innerRef={handleSidebarRef}
-                fixed
-              >
-                <div className="toggle-group-wrapper">
-                  <ToggleGroup>
-                    <ToggleItem
-                      active={
-                        router.pathname.startsWith('/docs') &&
-                        !router.pathname.startsWith('/docs/api')
-                      }
-                    >
-                      <NextLink href="/docs">
-                        <a onClick={handleIndexClick}>Docs</a>
-                      </NextLink>
-                    </ToggleItem>
-                    <ToggleItem
-                      active={router.pathname.startsWith('/docs/api')}
-                    >
-                      <NextLink href="/docs/api">
-                        <a onClick={handleIndexClick}>API Reference</a>
-                      </NextLink>
-                    </ToggleItem>
-                    <ToggleItem
-                      active={router.pathname.startsWith('/examples')}
-                    >
-                      <NextLink href="/examples">
-                        <a onClick={handleIndexClick}>Examples</a>
-                      </NextLink>
-                    </ToggleItem>
-                  </ToggleGroup>
+      <DocsRuntime docs={Data}>
+        {({ structure }) => (
+          <>
+            <Sidebar
+              active={navigationActive}
+              innerRef={handleSidebarRef}
+              fixed
+            >
+              <div className="toggle-group-wrapper">
+                <ToggleGroup>
+                  <ToggleItem
+                    active={
+                      router.pathname.startsWith('/docs') &&
+                      !router.pathname.startsWith('/docs/api')
+                    }
+                  >
+                    <NextLink href="/docs">
+                      <a onClick={handleIndexClick}>Docs</a>
+                    </NextLink>
+                  </ToggleItem>
+                  <ToggleItem active={router.pathname.startsWith('/docs/api')}>
+                    <NextLink href="/docs/api">
+                      <a onClick={handleIndexClick}>API Reference</a>
+                    </NextLink>
+                  </ToggleItem>
+                  <ToggleItem active={router.pathname.startsWith('/examples')}>
+                    <NextLink href="/examples">
+                      <a onClick={handleIndexClick}>Examples</a>
+                    </NextLink>
+                  </ToggleItem>
+                </ToggleGroup>
+              </div>
+              <DocsIndex
+                activeItem={{
+                  category: activeCategory,
+                  section: activeSection,
+                  entry: activeEntry,
+                  subEntry: activeSubEntry
+                }}
+                getHref={getHref}
+                onEntryActive={handleEntryActive}
+                onSectionActive={handleSectionActive}
+                onClickLink={handleIndexClick}
+                structure={structure}
+                updateActive={updateActive}
+                setInitiallyActive={setInitiallyActive}
+              />
+              {versioned && (
+                <div className="select-wrapper">
+                  <VersionSwitcher
+                    version={version}
+                    onChange={handleVersionChange}
+                  />
                 </div>
-                <DocsIndex
-                  activeItem={{
-                    category: activeCategory,
-                    section: activeSection,
-                    entry: activeEntry,
-                    subEntry: activeSubEntry
-                  }}
-                  getHref={getHref}
-                  onEntryActive={handleEntryActive}
-                  onSectionActive={handleSectionActive}
-                  onClickLink={handleIndexClick}
-                  structure={structure}
-                  updateActive={updateActive}
-                  setInitiallyActive={setInitiallyActive}
-                />
-                {versioned && (
-                  <div className="select-wrapper">
-                    <VersionSwitcher
-                      version={version}
-                      onChange={handleVersionChange}
-                    />
-                  </div>
-                )}
-              </Sidebar>
-              <Content>
-                <div className="content">
-                  <div>
-                    {structure.map(category => {
-                      const categorySlugs = { category: category.slug }
-                      return (
-                        <div
-                          className="category-wrapper"
-                          key={getFragment(categorySlugs)}
+              )}
+            </Sidebar>
+            <Content>
+              <div className="content">
+                <div>
+                  {structure.map(category => {
+                    const categorySlugs = { category: category.slug }
+                    return (
+                      <div
+                        className="category-wrapper"
+                        key={getFragment(categorySlugs)}
+                      >
+                        <span id={getFragment(categorySlugs)} />
+                        <Context.Provider
+                          value={{
+                            slugs: categorySlugs,
+                            updateActive
+                          }}
                         >
-                          <span id={getFragment(categorySlugs)} />
-                          <Context.Provider
-                            value={{
-                              slugs: categorySlugs,
-                              updateActive
-                            }}
-                          >
-                            {category.content}
-                          </Context.Provider>
+                          {category.content}
+                        </Context.Provider>
 
-                          {category.sections.map(section => {
-                            const sectionSlugs = {
-                              category: category.slug,
-                              section: section.slug
-                            }
+                        {category.sections.map(section => {
+                          const sectionSlugs = {
+                            category: category.slug,
+                            section: section.slug
+                          }
 
-                            return (
-                              <div
-                                className="section-wrapper"
-                                key={getFragment(sectionSlugs)}
+                          return (
+                            <div
+                              className="section-wrapper"
+                              key={getFragment(sectionSlugs)}
+                            >
+                              <span id={getFragment(sectionSlugs)} />
+                              <Context.Provider
+                                value={{
+                                  slugs: sectionSlugs,
+                                  updateActive
+                                }}
                               >
-                                <span id={getFragment(sectionSlugs)} />
-                                <Context.Provider
-                                  value={{
-                                    slugs: sectionSlugs,
-                                    updateActive
-                                  }}
-                                >
-                                  {section.content}
-                                </Context.Provider>
-                                <div>
-                                  {section.entries.map(entry => {
-                                    const entrySlugs = {
-                                      category: category.slug,
-                                      section: section.slug,
-                                      entry: entry.slug
-                                    }
+                                {section.content}
+                              </Context.Provider>
+                              <div>
+                                {section.entries.map(entry => {
+                                  const entrySlugs = {
+                                    category: category.slug,
+                                    section: section.slug,
+                                    entry: entry.slug
+                                  }
 
-                                    return (
-                                      <div
-                                        className="entry-wrapper"
-                                        key={getFragment(entrySlugs)}
+                                  return (
+                                    <div
+                                      className="entry-wrapper"
+                                      key={getFragment(entrySlugs)}
+                                    >
+                                      <span id={getFragment(entrySlugs)} />
+                                      <Context.Provider
+                                        value={{
+                                          slugs: entrySlugs,
+                                          updateActive
+                                        }}
                                       >
-                                        <span id={getFragment(entrySlugs)} />
-                                        <Context.Provider
-                                          value={{
-                                            slugs: entrySlugs,
-                                            updateActive
-                                          }}
-                                        >
-                                          {entry.content}
-                                        </Context.Provider>
-                                        <div>
-                                          {entry.subEntries.map(subEntry => {
-                                            const subEntrySlugs = {
-                                              category: category.slug,
-                                              section: section.slug,
-                                              entry: entry.slug,
-                                              subEntry: subEntry.slug
-                                            }
+                                        {entry.content}
+                                      </Context.Provider>
+                                      <div>
+                                        {entry.subEntries.map(subEntry => {
+                                          const subEntrySlugs = {
+                                            category: category.slug,
+                                            section: section.slug,
+                                            entry: entry.slug,
+                                            subEntry: subEntry.slug
+                                          }
 
-                                            return (
-                                              <div
-                                                className="entry-wrapper"
-                                                key={getFragment(subEntrySlugs)}
+                                          return (
+                                            <div
+                                              className="entry-wrapper"
+                                              key={getFragment(subEntrySlugs)}
+                                            >
+                                              <span
+                                                id={getFragment(subEntrySlugs)}
+                                              />
+                                              <Context.Provider
+                                                value={{
+                                                  slugs: subEntrySlugs,
+                                                  updateActive
+                                                }}
                                               >
-                                                <span
-                                                  id={getFragment(
-                                                    subEntrySlugs
-                                                  )}
-                                                />
-                                                <Context.Provider
-                                                  value={{
-                                                    slugs: subEntrySlugs,
-                                                    updateActive
-                                                  }}
-                                                >
-                                                  {subEntry.content}
-                                                </Context.Provider>
-                                              </div>
-                                            )
-                                          })}
-                                        </div>
+                                                {subEntry.content}
+                                              </Context.Provider>
+                                            </div>
+                                          )
+                                        })}
                                       </div>
-                                    )
-                                  })}
-                                </div>
+                                    </div>
+                                  )
+                                })}
                               </div>
-                            )
-                          })}
-                        </div>
-                      )
-                    })}
-                  </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
                 </div>
-                <NonAmpOnly>
-                  <>
-                    <HR />
-                    <FooterFeedback />
-                  </>
-                </NonAmpOnly>
-              </Content>
-            </Main>
-          )}
-        </DocsRuntime>
+              </div>
+              <NonAmpOnly>
+                <>
+                  <HR />
+                  <FooterFeedback />
+                </>
+              </NonAmpOnly>
+            </Content>
+          </>
+        )}
+      </DocsRuntime>
 
-        <style jsx>{`
-          ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-          }
+      <style jsx>{`
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
 
-          .category-wrapper:not(:first-child) {
-            padding: 40px 0;
-          }
+        .category-wrapper:not(:first-child) {
+          padding: 40px 0;
+        }
 
-          .category-wrapper:first-child :global(h1) {
-            margin-top: 0;
-          }
+        .category-wrapper:first-child :global(h1) {
+          margin-top: 0;
+        }
 
-          .category-wrapper:not(:last-child) {
-            border-bottom: 1px solid #eaeaea;
-          }
+        .category-wrapper:not(:last-child) {
+          border-bottom: 1px solid #eaeaea;
+        }
 
-          .category-wrapper:last-child {
-            padding-bottom: 0;
-          }
+        .category-wrapper:last-child {
+          padding-bottom: 0;
+        }
 
-          .category-wrapper,
-          .section-wrapper,
-          .entry-wrapper {
-            position: relative;
-          }
+        .category-wrapper,
+        .section-wrapper,
+        .entry-wrapper {
+          position: relative;
+        }
 
-          .entry-wrapper > :global(*:last-child) {
-            margin-bottom: 0;
-          }
+        .entry-wrapper > :global(*:last-child) {
+          margin-bottom: 0;
+        }
 
-          span {
-            position: absolute;
-            top: -${HEADER_HEIGHT + 24}px;
-          }
+        span {
+          position: absolute;
+          top: -${HEADER_HEIGHT + 24}px;
+        }
 
-          .platform-select-title {
-            font-size: var(--font-size-primary);
-            line-height: var(--line-height-primary);
-            font-weight: bold;
-            margin-bottom: 16px;
-            margin-top: 0;
-          }
+        .platform-select-title {
+          font-size: var(--font-size-primary);
+          line-height: var(--line-height-primary);
+          font-weight: bold;
+          margin-bottom: 16px;
+          margin-top: 0;
+        }
 
-          .select-wrapper {
-          }
+        .select-wrapper {
+        }
 
+        .toggle-group-wrapper {
+          display: none;
+        }
+
+        @media screen and (max-width: 950px) {
           .toggle-group-wrapper {
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
           }
-
-          @media screen and (max-width: 950px) {
-            .toggle-group-wrapper {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-bottom: 40px;
-            }
-          }
-        `}</style>
-      </Layout>
+        }
+      `}</style>
     </MDXProvider>
   )
 }

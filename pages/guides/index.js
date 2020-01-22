@@ -1,6 +1,5 @@
 import formatDate from 'date-fns/format'
 
-import Layout from '~/components/layout/layout'
 import Head from '~/components/layout/head'
 import Wrapper from '~/components/layout/wrapper'
 import { H1, H4, P } from '~/components/text'
@@ -10,7 +9,7 @@ import Button from '~/components/buttons'
 import guides from '~/lib/data/guides.json'
 
 const Guides = () => (
-  <Layout>
+  <>
     <Head
       titlePrefix=""
       titleSuffix=""
@@ -234,7 +233,7 @@ const Guides = () => (
         }
       }
     `}</style>
-  </Layout>
+  </>
 )
 
 export default Guides
